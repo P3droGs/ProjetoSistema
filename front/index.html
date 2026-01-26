@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard | Sistema de Agendamento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+    <h1>Agendamento</h1>
+    <a href="index.html" class="active">Dashboard</a>
+    <a href="agendamentos.html">Agendamentos Hoje</a>
+    <a href="clientes.html">Clientes</a>
+    <a href="barbeiros.html">Barbeiros</a>
+</aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+
+            <!-- HEADER -->
+            <div class="header-page">
+                <h2>Dashboard</h2>
+            </div>
+
+            <!-- CARDS -->
+            <div class="cards">
+                <div class="card">
+                    <span>Agendamentos Hoje</span>
+                    <strong>5</strong>
+                </div>
+                <div class="card">
+                    <span>Clientes Ativos</span>
+                    <strong>120</strong>
+                </div>
+                <div class="card">
+                    <span>Serviços</span>
+                    <strong>8</strong>
+                </div>
+                <div class="card">
+                    <span>Profissionais</span>
+                    <strong>3</strong>
+                </div>
+            </div>
+
+            <br />
+
+            <!-- TABELA RESUMO -->
+            <h3>Próximos Agendamentos</h3>
+            <br />
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Cliente</th>
+                        <th>Serviço</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>09:00</td>
+                        <td>João Silva</td>
+                        <td>Corte</td>
+                        <td>
+                            <select class="status-select">
+                                <option value="agendado" selected>Agendado</option>
+                                <option value="concluido">Concluído</option>
+                                <option value="cancelado">Cancelado</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>10:30</td>
+                        <td>Maria Souza</td>
+                        <td>Barba</td>
+                        <td>
+                            <select class="status-select">
+                                <option value="agendado">Agendado</option>
+                                <option value="concluido" selected>Concluído</option>
+                                <option value="cancelado">Cancelado</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </main>
+    </div>
+
+    <script src="app.ts"></script>
+</body>
+
+</html>
