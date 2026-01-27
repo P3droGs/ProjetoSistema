@@ -1,32 +1,51 @@
-// Marcar link ativo na sidebar
-const sidebarLinks = document.querySelectorAll<HTMLAnchorElement>(".sidebar a");
+interface Cliente {
+  id: string;
+  nome: string;
+  telefone: string;
+}
 
-sidebarLinks.forEach(link => {
-  if (link.href === window.location.href) {
-    link.classList.add("active");
+const API_URL = "http://localhost:3000/clientes";
+
+async function buscarClientes(): Promise<void> {
+  try {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar clientes");
+    }
+
+    const result = await response.json();
+
+    // 🔥 AQUI ESTÁ O AJUSTE PARA SEU BACKEND
+    const clientes: Cliente[] = result.clientes;
+
+    renderizarClientes(clientes);
+  } catch (error) {
+    console.error("Falha na conexão:", error);
   }
-});
+}
 
-// Capturar mudança de status no DASHBOARD
-const statusSelects = document.querySelectorAll<HTMLSelectElement>(".status-select");
+function renderizarClientes(clientes: Cliente[]): void {
+  const tbody = document.querySelector("table tbody");
 
-statusSelects.forEach(select => {
-  select.addEventListener("change", (event: Event) => {
-    const target = event.target;
+  if (!tbody) return;
 
-    if (!(target instanceof HTMLSelectElement)) return;
+  tbody.innerHTML = "";
 
-    const status: string = target.value;
-    const row = target.closest("tr") as HTMLTableRowElement | null;
+  clientes.forEach(cliente => {
+    const tr = document.createElement("tr");
 
-    console.log("Status alterado para:", status);
-    console.log("Linha:", row);
+    tr.innerHTML = `
+      <td>${cliente.nome}</td>
+      <td>${cliente.telefone}</td>
+      <td>-</td>
+    `;
 
-    // FUTURO BACKEND:
-    // fetch(`/api/agendamentos/${id}`, {
-    //   method: "PUT",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ status })
-    // });
+    tbody.appendChild(tr);
   });
-});
+}
+
+// ✅ Garante que só roda em clientes.html
+if (window.location.pathname.includes("clientes.html")) {
+  buscarClientes();
+}
