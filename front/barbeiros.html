@@ -26,53 +26,19 @@
       <!-- HEADER -->
       <div class="header-page">
         <h2>Barbeiros</h2>
-        <button>+ Adicionar Barbeiro</button>
+        <button id="btn-add">+ Adicionar Barbeiro</button>
       </div>
 
-      <!-- LISTA DE BARBEIROS -->
-      <div class="cards">
-
-        <!-- BARBEIRO -->
-        <div class="card">
-          <span>Barbeiro</span>
-          <strong>João Barber</strong>
-
-          <br />
-
-          <span>Horários Ocupados</span>
-          <ul style="margin-top: 8px; color: var(--muted); font-size: 14px;">
-            <li>09:00 - Corte</li>
-            <li>10:30 - Barba</li>
-            <li>14:00 - Corte + Barba</li>
-          </ul>
-
-          <br />
-
-          <button style="background:#dc2626;">Remover</button>
-        </div>
-
-        <!-- BARBEIRO -->
-        <div class="card">
-          <span>Barbeiro</span>
-          <strong>Maria Barber</strong>
-
-          <br />
-
-          <span>Horários Ocupados</span>
-          <ul style="margin-top: 8px; color: var(--muted); font-size: 14px;">
-            <li>11:00 - Corte</li>
-            <li>15:00 - Barba</li>
-          </ul>
-
-          <br />
-
-          <button style="background:#dc2626;">Remover</button>
-        </div>
-
+      <!-- LISTA DINÂMICA DE BARBEIROS -->
+      <div class="cards" id="barbeiros-container">
+        <!-- cards renderizados via JS -->
       </div>
 
     </main>
   </div>
 
+  <!-- SCRIPT -->
+  <script type="module" src="./dist/app.js"></script>
 </body>
+
 </html>

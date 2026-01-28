@@ -31,4 +31,11 @@ export class BarbeirosRepository implements IBarbeirosRepository {
       total: Number(totalResult.rows[0].count),
     };
   }
+
+  async remove(id: string): Promise<void> {
+    await this.pool.query(
+      `DELETE FROM barbeiros WHERE id = $1`,
+      [id]
+    );
+  }
 }

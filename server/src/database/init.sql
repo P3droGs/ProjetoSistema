@@ -1,24 +1,20 @@
--- =========================
--- EXTENSÃO (UUID)
--- =========================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- =========================
 -- DROP TABLES (ORDEM CORRETA)
 -- =========================
-DROP TABLE IF EXISTS bloqueios_agenda CASCADE;
-DROP TABLE IF EXISTS agendamentos CASCADE;
-DROP TABLE IF EXISTS servicos CASCADE;
-DROP TABLE IF EXISTS barbeiros CASCADE;
-DROP TABLE IF EXISTS clientes CASCADE;
+DROP TABLE IF EXISTS bloqueios_agenda;
+DROP TABLE IF EXISTS agendamentos;
+DROP TABLE IF EXISTS servicos;
+DROP TABLE IF EXISTS barbeiros;
+DROP TABLE IF EXISTS clientes;
 
-DROP TYPE IF EXISTS status_agendamento;
 
 -- =========================
 -- CLIENTES
 -- =========================
 CREATE TABLE clientes (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nome VARCHAR(100) NOT NULL,
     telefone VARCHAR(20),
     email VARCHAR(100),
@@ -29,7 +25,7 @@ CREATE TABLE clientes (
 -- BARBEIROS
 -- =========================
 CREATE TABLE barbeiros (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nome VARCHAR(100) NOT NULL,
     ativo BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -41,19 +37,9 @@ CREATE TABLE barbeiros (
 CREATE TABLE servicos (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nome VARCHAR(100) NOT NULL,
-    duracao_minutos INTEGER NOT NULL CHECK (duracao_minutos > 0),
-    preco NUMERIC(10,2) NOT NULL CHECK (preco >= 0),
+    duracao_minutos INT NOT NULL,
+    preco NUMERIC(10,2) NOT NULL,
     ativo BOOLEAN DEFAULT TRUE
-);
-
--- =========================
--- STATUS DO AGENDAMENTO
--- =========================
-CREATE TYPE status_agendamento AS ENUM (
-    'agendado',
-    'confirmado',
-    'cancelado',
-    'concluido'
 );
 
 -- =========================
@@ -62,84 +48,62 @@ CREATE TYPE status_agendamento AS ENUM (
 CREATE TABLE agendamentos (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
-    cliente_id UUID NOT NULL,
-    barbeiro_id UUID NOT NULL,
-    servico_id UUID NOT NULL,
+    cliente_id UUID,
+    barbeiro_id UUID,
+    servico_id UUID,
 
     data DATE NOT NULL,
     hora_inicio TIME NOT NULL,
     hora_fim TIME NOT NULL,
 
-    status status_agendamento DEFAULT 'agendado',
+    status VARCHAR(20) DEFAULT 'agendado',
     observacoes TEXT,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_cliente
-        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+        FOREIGN KEY (cliente_id)
+        REFERENCES clientes(id)
+        ON DELETE SET NULL,
 
     CONSTRAINT fk_barbeiro
-        FOREIGN KEY (barbeiro_id) REFERENCES barbeiros(id),
+        FOREIGN KEY (barbeiro_id)
+        REFERENCES barbeiros(id)
+        ON DELETE SET NULL,
 
     CONSTRAINT fk_servico
-        FOREIGN KEY (servico_id) REFERENCES servicos(id),
-
-    CONSTRAINT chk_horario_valido
-        CHECK (hora_fim > hora_inicio)
+        FOREIGN KEY (servico_id)
+        REFERENCES servicos(id)
+        ON DELETE SET NULL
 );
 
 -- =========================
--- BLOQUEIOS DE AGENDA
+-- SEED
 -- =========================
-CREATE TABLE bloqueios_agenda (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    barbeiro_id UUID NOT NULL,
-    data DATE NOT NULL,
-    hora_inicio TIME NOT NULL,
-    hora_fim TIME NOT NULL,
-    motivo VARCHAR(255),
+INSERT INTO barbeiros (nome) VALUES
+('João'),
+('Carlos'),
+('Marcos');
 
-    CONSTRAINT fk_barbeiro_bloqueio
-        FOREIGN KEY (barbeiro_id) REFERENCES barbeiros(id) ON DELETE CASCADE,
+INSERT INTO clientes (nome, telefone, email) VALUES
+('Pedro Henrique', '11999999999', 'pedro@email.com'),
+('Lucas Silva', '11988888888', 'lucas@email.com');
 
-    CONSTRAINT chk_bloqueio_horario
-        CHECK (hora_fim > hora_inicio)
-);
+INSERT INTO servicos (nome, duracao_minutos, preco) VALUES
+('Corte Masculino', 30, 35.00),
+('Barba', 20, 25.00);
 
--- =========================
--- EVITAR CONFLITO DE HORÁRIOS
--- =========================
-CREATE UNIQUE INDEX uk_agendamento_conflito
-ON agendamentos (
+INSERT INTO agendamentos (
+    cliente_id,
     barbeiro_id,
+    servico_id,
     data,
     hora_inicio,
     hora_fim
-)
-WHERE status IN ('agendado', 'confirmado');
-
--- =========================
--- SEED: BARBEIROS (IDs FIXOS)
--- =========================
-INSERT INTO barbeiros (id, nome) VALUES
-('11111111-1111-1111-1111-111111111111', 'João'),
-('22222222-2222-2222-2222-222222222222', 'Carlos'),
-('33333333-3333-3333-3333-333333333333', 'Marcos');
-
--- =========================
--- SEED: CLIENTES (IDs FIXOS)
--- =========================
-INSERT INTO clientes (id, nome, telefone, email) VALUES
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Pedro Henrique', '11999999999', 'pedro@email.com'),
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Lucas Silva', '11988888888', 'lucas@email.com'),
-('cccccccc-cccc-cccc-cccc-cccccccccccc', 'Mariana Souza', '11977777777', 'mariana@email.com'),
-('dddddddd-dddd-dddd-dddd-dddddddddddd', 'João Pedro', '11977777777', 'joaopedro@email.com');
-
-
--- =========================
--- SEED: SERVIÇOS
--- =========================
-INSERT INTO servicos (nome, duracao_minutos, preco) VALUES
-('Corte Masculino', 30, 35.00),
-('Barba', 20, 25.00),
-('Corte + Barba', 50, 55.00);
+) VALUES (
+    (SELECT id FROM clientes LIMIT 1),
+    (SELECT id FROM barbeiros LIMIT 1),
+    (SELECT id FROM servicos LIMIT 1),
+    CURRENT_DATE,
+    '09:00',
+    '09:30'
+);

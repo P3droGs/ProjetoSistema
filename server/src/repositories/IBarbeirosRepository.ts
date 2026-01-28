@@ -5,7 +5,7 @@ export interface FindAllBarbeirosParams {
 
 export interface FindAllBarbeirosResponse {
   barbeiros: {
-    id: number;
+    id: string;
     nome: string;
   }[];
   total: number;
@@ -15,4 +15,6 @@ export interface IBarbeirosRepository {
   findAll(
     params: FindAllBarbeirosParams
   ): Promise<FindAllBarbeirosResponse>;
+
+  remove(id: string): Promise<void>;
 }
