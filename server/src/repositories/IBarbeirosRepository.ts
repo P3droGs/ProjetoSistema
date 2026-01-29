@@ -1,3 +1,5 @@
+
+
 export interface FindAllBarbeirosParams {
   offset: number;
   limit: number;
@@ -18,3 +20,6 @@ export interface IBarbeirosRepository {
 
   remove(id: string): Promise<void>;
 }
+
+
+

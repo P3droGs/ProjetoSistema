@@ -1,58 +1,51 @@
+/* =========================
+   CLIENTES
+========================= */
+
 interface Cliente {
   id: string;
   nome: string;
   telefone: string;
-  email: string;
+  email?: string;
 }
 
-const API_URL = "http://localhost:3000/clientes";
+const API_CLIENTES = "http://localhost:3000/clientes";
 
 async function buscarClientes(): Promise<void> {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_CLIENTES);
 
     if (!response.ok) {
       throw new Error("Erro ao buscar clientes");
     }
 
     const result = await response.json();
-
-    // 🔥 AQUI ESTÁ O AJUSTE PARA SEU BACKEND
-    const clientes: Cliente[] = result.clientes;
-
-    renderizarClientes(clientes);
+    renderizarClientes(result.clientes);
   } catch (error) {
-    console.error("Falha na conexão:", error);
+    console.error("Falha na conexão (clientes):", error);
   }
 }
 
 function renderizarClientes(clientes: Cliente[]): void {
   const tbody = document.querySelector("table tbody");
-
   if (!tbody) return;
 
   tbody.innerHTML = "";
 
   clientes.forEach(cliente => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${cliente.nome}</td>
       <td>${cliente.telefone}</td>
-      <td>${cliente.email}</td>
-      <td>-</td>
+      <td>${cliente.email ?? "-"}</td>
     `;
-
     tbody.appendChild(tr);
   });
 }
 
-// ✅ Garante que só roda em clientes.html
-if (window.location.pathname.includes("clientes.html")) {
-  buscarClientes();
-}
-
-
+/* =========================
+   BARBEIROS
+========================= */
 
 interface Barbeiro {
   id: string;
@@ -60,6 +53,12 @@ interface Barbeiro {
 }
 
 const API_BARBEIROS = "http://localhost:3000/barbeiros";
+
+// Modal
+let barbeiroIdParaExcluir: string | null = null;
+const modal = document.getElementById("modal-excluir") as HTMLDivElement | null;
+const btnCancelar = document.getElementById("btn-cancelar") as HTMLButtonElement | null;
+const btnConfirmar = document.getElementById("btn-confirmar") as HTMLButtonElement | null;
 
 async function buscarBarbeiros(): Promise<void> {
   try {
@@ -70,18 +69,48 @@ async function buscarBarbeiros(): Promise<void> {
     }
 
     const result = await response.json();
-
-    const barbeiros: Barbeiro[] = result.barbeiros;
-
-    renderizarBarbeiros(barbeiros);
+    renderizarBarbeiros(result.barbeiros);
   } catch (error) {
-    console.error("Falha na conexão:", error);
+    console.error("Falha na conexão (barbeiros):", error);
   }
 }
 
+async function removerBarbeiro(id: string): Promise<void> {
+  try {
+    const response = await fetch(`${API_BARBEIROS}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao remover barbeiro");
+    }
+
+    buscarBarbeiros();
+  } catch (error) {
+    console.error("Erro ao remover:", error);
+  }
+}
+
+function abrirModal(id: string): void {
+  barbeiroIdParaExcluir = id;
+  modal?.classList.remove("hidden");
+}
+
+function fecharModal(): void {
+  barbeiroIdParaExcluir = null;
+  modal?.classList.add("hidden");
+}
+
+btnCancelar?.addEventListener("click", fecharModal);
+
+btnConfirmar?.addEventListener("click", () => {
+  if (!barbeiroIdParaExcluir) return;
+  removerBarbeiro(barbeiroIdParaExcluir);
+  fecharModal();
+});
+
 function renderizarBarbeiros(barbeiros: Barbeiro[]): void {
   const container = document.getElementById("barbeiros-container");
-
   if (!container) return;
 
   container.innerHTML = "";
@@ -103,16 +132,36 @@ function renderizarBarbeiros(barbeiros: Barbeiro[]): void {
 
       <br />
 
-      <button style="background:#dc2626;" data-id="${barbeiro.id}">
+      <button
+        class="btn-remover"
+        data-id="${barbeiro.id}"
+        style="background:#dc2626;"
+      >
         Remover
       </button>
     `;
 
     container.appendChild(card);
   });
+
+  document.querySelectorAll<HTMLButtonElement>(".btn-remover")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.id;
+        if (!id) return;
+        abrirModal(id);
+      });
+    });
 }
 
-// Só executa nessa página
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+if (window.location.pathname.includes("clientes.html")) {
+  buscarClientes();
+}
+
 if (window.location.pathname.includes("barbeiros.html")) {
   buscarBarbeiros();
 }
