@@ -3,7 +3,8 @@ import {
   IClientesRepository,
   FindAllClientesParams,
   FindAllClientesResponse,
-} from "..//iClientesRepository";
+  CreateClienteDTO,
+} from "../IClientesRepository";
 
 export class ClientesRepository implements IClientesRepository {
   constructor(private pool: Pool) {}
@@ -14,7 +15,7 @@ export class ClientesRepository implements IClientesRepository {
   }: FindAllClientesParams): Promise<FindAllClientesResponse> {
     const data = await this.pool.query(
       `
-      SELECT id, nome, telefone
+      SELECT id, nome, telefone, email
       FROM clientes
       ORDER BY nome
       OFFSET $1 LIMIT $2
@@ -30,5 +31,22 @@ export class ClientesRepository implements IClientesRepository {
       clientes: data.rows,
       total: Number(totalResult.rows[0].count),
     };
+  }
+
+  async create({ nome, telefone, email }: CreateClienteDTO): Promise<void> {
+    await this.pool.query(
+      `
+      INSERT INTO clientes (nome, telefone, email)
+      VALUES ($1, $2, $3)
+      `,
+      [nome, telefone ?? null, email ?? null]
+    );
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.pool.query(
+      `DELETE FROM clientes WHERE id = $1`,
+      [id]
+    );
   }
 }

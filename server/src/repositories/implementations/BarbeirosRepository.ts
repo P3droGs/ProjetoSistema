@@ -3,15 +3,15 @@ import {
   IBarbeirosRepository,
   FindAllBarbeirosParams,
   FindAllBarbeirosResponse,
+  CreateBarbeiroDTO,
 } from "../IBarbeirosRepository";
 
 export class BarbeirosRepository implements IBarbeirosRepository {
   constructor(private pool: Pool) {}
 
-  async findAll({
-    offset,
-    limit,
-  }: FindAllBarbeirosParams): Promise<FindAllBarbeirosResponse> {
+  async findAll({ offset, limit }: FindAllBarbeirosParams)
+    : Promise<FindAllBarbeirosResponse> {
+
     const data = await this.pool.query(
       `
       SELECT id, nome
@@ -38,7 +38,11 @@ export class BarbeirosRepository implements IBarbeirosRepository {
       [id]
     );
   }
+
+  async create({ nome }: CreateBarbeiroDTO): Promise<void> {
+    await this.pool.query(
+      `INSERT INTO barbeiros (nome) VALUES ($1)`,
+      [nome]
+    );
+  }
 }
-
-
-

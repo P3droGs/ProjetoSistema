@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <title>Barbeiros | Sistema de Agendamento</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<div id="modal-excluir" class="modal hidden">
-  <div class="modal-content">
-    <h3>Excluir barbeiro</h3>
-    <p>Tem certeza que deseja excluir este barbeiro?</p>
 
-    <div class="modal-actions">
-      <button id="btn-cancelar">Cancelar</button>
-      <button id="btn-confirmar" class="danger">Excluir</button>
+<body>
+
+  <!-- MODAL EXCLUIR -->
+  <div id="modal-excluir" class="modal hidden">
+    <div class="modal-content">
+      <h3>Excluir barbeiro</h3>
+      <p>Tem certeza que deseja excluir este barbeiro?</p>
+
+      <div class="modal-actions">
+        <button id="btn-cancelar">Cancelar</button>
+        <button id="btn-confirmar" class="danger">Excluir</button>
+      </div>
     </div>
   </div>
-</div>
-<body>
+
+  <!-- MODAL ADICIONAR -->
+  <div id="modal-adicionar" class="modal hidden">
+    <div class="modal-content">
+      <h3>Adicionar barbeiro</h3>
+
+      <input
+        type="text"
+        id="input-nome-barbeiro"
+        placeholder="Nome do barbeiro"
+        style="
+          width:100%;
+          padding:10px;
+          border-radius:8px;
+          border:1px solid var(--border);
+          margin:12px 0 20px;
+        "
+      />
+
+      <div class="modal-actions">
+        <button id="btn-cancelar-add">Cancelar</button>
+        <button id="btn-confirmar-add">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
   <div class="layout">
 
     <!-- SIDEBAR -->
@@ -39,9 +67,9 @@
         <button id="btn-add">+ Adicionar Barbeiro</button>
       </div>
 
-      <!-- LISTA DINÂMICA DE BARBEIROS -->
+      <!-- LISTA -->
       <div class="cards" id="barbeiros-container">
-        <!-- cards renderizados via JS -->
+        <!-- cards gerados via JS -->
       </div>
 
     </main>
@@ -50,5 +78,4 @@
   <!-- SCRIPT -->
   <script type="module" src="./dist/app.js"></script>
 </body>
-
 </html>

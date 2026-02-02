@@ -1,4 +1,4 @@
-import { IClientesRepository } from "../../repositories/iClientesRepository";
+import { IClientesRepository } from "../../repositories/IClientesRepository";
 import { GetClientesDTO } from "./GetClientesDTO";
 
 export class GetClientesUseCase {

@@ -5,15 +5,28 @@ export interface FindAllClientesParams {
 
 export interface FindAllClientesResponse {
   clientes: {
-    id: number;
+    id: string;
     nome: string;
-    telefone: string;
+    telefone: string | null;
+    email?: string | null;
   }[];
   total: number;
+}
+
+export interface CreateClienteDTO {
+  nome: string;
+  telefone?: string;
+  email?: string;
 }
 
 export interface IClientesRepository {
   findAll(
     params: FindAllClientesParams
   ): Promise<FindAllClientesResponse>;
+
+  create(
+    data: CreateClienteDTO
+  ): Promise<void>;
+
+  remove(id: string): Promise<void>;
 }

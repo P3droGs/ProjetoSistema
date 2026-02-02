@@ -1,3 +1,6 @@
+export interface CreateBarbeiroDTO {
+  nome: string;
+}
 
 
 export interface FindAllBarbeirosParams {
@@ -19,6 +22,7 @@ export interface IBarbeirosRepository {
   ): Promise<FindAllBarbeirosResponse>;
 
   remove(id: string): Promise<void>;
+   create(data: CreateBarbeiroDTO): Promise<void>;
 }
 
 
