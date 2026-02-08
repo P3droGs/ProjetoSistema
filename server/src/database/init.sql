@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS servicos;
 DROP TABLE IF EXISTS barbeiros;
 DROP TABLE IF EXISTS clientes;
 
-
 -- =========================
 -- CLIENTES
 -- =========================
@@ -77,33 +76,65 @@ CREATE TABLE agendamentos (
 );
 
 -- =========================
--- SEED
+-- SEED - BARBEIROS
 -- =========================
 INSERT INTO barbeiros (nome) VALUES
 ('João'),
 ('Carlos'),
 ('Marcos');
 
+-- =========================
+-- SEED - CLIENTES
+-- =========================
 INSERT INTO clientes (nome, telefone, email) VALUES
 ('Pedro Henrique', '11999999999', 'pedro@email.com'),
-('Lucas Silva', '11988888888', 'lucas@email.com');
+('Lucas Silva', '11988888888', 'lucas@email.com'),
+('Mariana Souza', '11977777777', 'mariana@email.com');
 
+-- =========================
+-- SEED - SERVIÇOS
+-- =========================
 INSERT INTO servicos (nome, duracao_minutos, preco) VALUES
 ('Corte Masculino', 30, 35.00),
-('Barba', 20, 25.00);
+('Barba', 20, 25.00),
+('Corte + Barba', 50, 55.00);
 
+-- =========================
+-- SEED - AGENDAMENTOS (HOJE)
+-- =========================
 INSERT INTO agendamentos (
     cliente_id,
     barbeiro_id,
     servico_id,
     data,
     hora_inicio,
-    hora_fim
-) VALUES (
-    (SELECT id FROM clientes LIMIT 1),
-    (SELECT id FROM barbeiros LIMIT 1),
-    (SELECT id FROM servicos LIMIT 1),
+    hora_fim,
+    status
+) VALUES
+(
+    (SELECT id FROM clientes WHERE nome = 'Pedro Henrique' LIMIT 1),
+    (SELECT id FROM barbeiros WHERE nome = 'João' LIMIT 1),
+    (SELECT id FROM servicos WHERE nome = 'Corte Masculino' LIMIT 1),
     CURRENT_DATE,
     '09:00',
-    '09:30'
+    '09:30',
+    'agendado'
+),
+(
+    (SELECT id FROM clientes WHERE nome = 'Lucas Silva' LIMIT 1),
+    (SELECT id FROM barbeiros WHERE nome = 'Carlos' LIMIT 1),
+    (SELECT id FROM servicos WHERE nome = 'Barba' LIMIT 1),
+    CURRENT_DATE,
+    '10:00',
+    '10:20',
+    'confirmado'
+),
+(
+    (SELECT id FROM clientes WHERE nome = 'Mariana Souza' LIMIT 1),
+    (SELECT id FROM barbeiros WHERE nome = 'Marcos' LIMIT 1),
+    (SELECT id FROM servicos WHERE nome = 'Corte + Barba' LIMIT 1),
+    CURRENT_DATE,
+    '11:00',
+    '11:50',
+    'agendado'
 );

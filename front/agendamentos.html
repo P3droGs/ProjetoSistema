@@ -22,11 +22,11 @@
         <button>Novo Agendamento</button>
       </div>
 
-      <div class="cards">
-        <div class="card"><span>Total</span><strong>5</strong></div>
-        <div class="card"><span>Concluídos</span><strong>2</strong></div>
-        <div class="card"><span>Cancelados</span><strong>1</strong></div>
-      </div>
+     <div class="cards">
+  <div class="card"><span>Total</span><strong id="total">0</strong></div>
+  <div class="card"><span>Concluídos</span><strong id="concluidos">0</strong></div>
+  <div class="card"><span>Cancelados</span><strong id="cancelados">0</strong></div>
+</div>
 
       <br />
 
@@ -39,14 +39,9 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>09:00</td>
-            <td>João Silva</td>
-            <td>Corte</td>
-            <td class="status agendado">Agendado</td>
-          </tr>
-        </tbody>
+       <tbody id="agendamentos-body">
+
+      </tbody>
       </table>
     </main>
   </div>

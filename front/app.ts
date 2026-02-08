@@ -409,7 +409,77 @@ btnConfirmarAdd?.addEventListener("click", () => {
   fecharModalAdicionar();
 });
 
+/* =========================
+   AGENDAMENTOS (HOJE)
+========================= */
 
+interface AgendamentoHoje {
+  id: string;
+  hora_inicio: string;
+  hora_fim: string;
+  status: string;
+  cliente: string | null;
+  servico: string | null;
+}
+
+const API_AGENDAMENTOS_HOJE =
+  "http://localhost:3000/agendamentos/hoje";
+
+async function buscarAgendamentosHoje(): Promise<void> {
+  try {
+    const response = await fetch(API_AGENDAMENTOS_HOJE);
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar agendamentos de hoje");
+    }
+
+    const agendamentos: AgendamentoHoje[] = await response.json();
+    renderizarAgendamentosHoje(agendamentos);
+  } catch (error) {
+    console.error("Falha na conexão (agendamentos):", error);
+  }
+}
+
+function renderizarAgendamentosHoje(
+  agendamentos: AgendamentoHoje[]
+): void {
+  const tbody = document.getElementById("agendamentos-body");
+  const totalEl = document.getElementById("total");
+  const concluidosEl = document.getElementById("concluidos");
+  const canceladosEl = document.getElementById("cancelados");
+
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  let total = 0;
+  let concluidos = 0;
+  let cancelados = 0;
+
+  agendamentos.forEach(ag => {
+    total++;
+
+    if (ag.status === "concluido") concluidos++;
+    if (ag.status === "cancelado") cancelados++;
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${ag.hora_inicio.slice(0, 5)}</td>
+      <td>${ag.cliente ?? "-"}</td>
+      <td>${ag.servico ?? "-"}</td>
+      <td class="status ${ag.status}">
+        ${ag.status.charAt(0).toUpperCase() + ag.status.slice(1)}
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  if (totalEl) totalEl.textContent = String(total);
+  if (concluidosEl) concluidosEl.textContent = String(concluidos);
+  if (canceladosEl) canceladosEl.textContent = String(cancelados);
+}
 /* =========================
    INICIALIZAÇÃO
 ========================= */
@@ -421,3 +491,11 @@ if (window.location.pathname.includes("clientes.html")) {
 if (window.location.pathname.includes("barbeiros.html")) {
   buscarBarbeiros();
 }
+
+if (window.location.pathname.includes("agendamentos.html")) {
+  buscarAgendamentosHoje();
+}
+
+
+
+

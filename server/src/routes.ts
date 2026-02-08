@@ -5,6 +5,9 @@ import { deleteBarbeiroController } from "./useCases/deletBarbeiros.ts";
 import { createBarbeiroController } from "./useCases/createBarbeiro";
 import { createClienteController } from "./useCases/createCliente";
 import { removeClienteController } from "./useCases/removeCliente";
+import { getAgendamentosController} from  "./useCases/getAgendamentos"
+
+
 const router = Router();
 
 router.delete("/barbeiros/:id", (req, res) =>
@@ -25,4 +28,9 @@ router.post("/clientes", (req, res) => {
 router.delete("/clientes/:id", (req, res) =>
   removeClienteController.handle(req, res)
 );
+
+router.get("/agendamentos/hoje", (req: Request, res: Response) => {
+  return getAgendamentosController.handle(req, res);
+});
+
 export default router;
