@@ -29,4 +29,6 @@ export interface IClientesRepository {
   ): Promise<void>;
 
   remove(id: string): Promise<void>;
+
+  update(id:string, telefone?:string, email?:string): Promise<void>;
 }

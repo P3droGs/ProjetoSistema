@@ -49,4 +49,39 @@ export class ClientesRepository implements IClientesRepository {
       [id]
     );
   }
+
+   async update(id: string, telefone?: string, email?: string): Promise<void> {
+    
+    const fields: string[] = [];
+    const values: any[] = [];
+    let index = 1;
+
+    if (telefone !== undefined) {
+      fields.push(`telefone = $${index}`);
+      values.push(telefone);
+      index++;
+    }
+
+    if (email !== undefined) {
+      fields.push(`email = $${index}`);
+      values.push(email);
+      index++;
+    }
+
+    if (fields.length === 0) {
+      // Nada para atualizar
+      return;
+    }
+
+    const query = `
+      UPDATE clientes
+      SET ${fields.join(", ")}
+      WHERE id = $${index}
+    `;
+
+    values.push(id);
+
+    await this.pool.query(query, values);
+  
+}
 }
