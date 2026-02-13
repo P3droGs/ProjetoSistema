@@ -10,6 +10,9 @@ import { updateClientesController } from "./useCases/updateClientes";
 
 const router = Router();
 
+router.put("/:id", (req: Request, res: Response) => {
+  return updateClientesController.handle(req, res);
+});
 router.delete("/barbeiros/:id", (req, res) =>
   deleteBarbeiroController.handle(req, res)
 );
@@ -33,8 +36,6 @@ router.get("/agendamentos/hoje", (req: Request, res: Response) => {
   return getAgendamentosController.handle(req, res);
 });
 
-router.put("/clientes/:id"), (req: Request, res:Response) =>{
-  return  updateClientesController.handle(req,res)
-}
+
 
 export default router;

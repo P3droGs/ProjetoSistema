@@ -2,6 +2,7 @@ import { IClientesRepository } from "../../repositories/IClientesRepository";
 
 interface UpdateClienteRequest {
   id: string;
+  nome?: string;
   telefone?: string;
   email?: string;
 }
@@ -11,16 +12,18 @@ export class UpdateClientesUseCase {
     private clientesRepository: IClientesRepository
   ) {}
 
-  async execute({ id, telefone, email }: UpdateClienteRequest): Promise<void> {
+async execute({ id, nome, telefone, email }: UpdateClienteRequest): Promise<void> {
+
 
     if (!id) {
       throw new Error("ID do cliente é obrigatório");
     }
 
-    if (!telefone && !email) {
-      throw new Error("Informe ao menos telefone ou email para atualizar");
-    }
+    if (!nome && !telefone && !email) {
+  throw new Error("Informe ao menos um campo para atualizar");
+}
 
-    await this.clientesRepository.update(id, telefone, email );
+
+  await this.clientesRepository.update(id, nome, telefone, email);
   }
 }

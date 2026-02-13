@@ -50,38 +50,42 @@ export class ClientesRepository implements IClientesRepository {
     );
   }
 
-   async update(id: string, telefone?: string, email?: string): Promise<void> {
+ async update(id: string, nome?: string, telefone?: string, email?: string): Promise<void> {
     
-    const fields: string[] = [];
-    const values: any[] = [];
-    let index = 1;
+  const fields: string[] = [];
+  const values: any[] = [];
+  let index = 1;
 
-    if (telefone !== undefined) {
-      fields.push(`telefone = $${index}`);
-      values.push(telefone);
-      index++;
-    }
+  if (nome !== undefined) {
+    fields.push(`nome = $${index}`);
+    values.push(nome);
+    index++;
+  }
 
-    if (email !== undefined) {
-      fields.push(`email = $${index}`);
-      values.push(email);
-      index++;
-    }
+  if (telefone !== undefined) {
+    fields.push(`telefone = $${index}`);
+    values.push(telefone);
+    index++;
+  }
 
-    if (fields.length === 0) {
-      // Nada para atualizar
-      return;
-    }
+  if (email !== undefined) {
+    fields.push(`email = $${index}`);
+    values.push(email);
+    index++;
+  }
 
-    const query = `
-      UPDATE clientes
-      SET ${fields.join(", ")}
-      WHERE id = $${index}
-    `;
+  if (fields.length === 0) {
+    return;
+  }
 
-    values.push(id);
+  const query = `
+    UPDATE clientes
+    SET ${fields.join(", ")}
+    WHERE id = $${index}
+  `;
 
-    await this.pool.query(query, values);
-  
+  values.push(id);
+
+  await this.pool.query(query, values);
 }
 }
