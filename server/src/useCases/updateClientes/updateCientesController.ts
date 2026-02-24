@@ -8,7 +8,7 @@ export class UpdateClientesController {
 
   async handle(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
-    const { nome, email, telefone } = req.body; // ✅ AGORA VEM DO BODY
+    const { nome, email, telefone } = req.body; 
 
     await this.updateClientesUseCase.execute({
       id,

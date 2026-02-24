@@ -22,7 +22,8 @@ export interface IBarbeirosRepository {
   ): Promise<FindAllBarbeirosResponse>;
 
   remove(id: string): Promise<void>;
-   create(data: CreateBarbeiroDTO): Promise<void>;
+  create(data: CreateBarbeiroDTO): Promise<void>;
+  update (id:string, nome:string): Promise<void>;
 }
 
 

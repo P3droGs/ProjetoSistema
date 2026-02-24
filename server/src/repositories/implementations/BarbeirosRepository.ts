@@ -45,4 +45,15 @@ export class BarbeirosRepository implements IBarbeirosRepository {
       [nome]
     );
   }
+  async update(id: string, nome: string): Promise<void> {
+    await this.pool.query(
+      `
+      UPDATE barbeiros
+      SET nome = $1
+      WHERE id = $2
+      `,
+      [nome, id]
+    );
+  }
 }
+
