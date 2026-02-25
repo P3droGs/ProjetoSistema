@@ -7,11 +7,16 @@ import { createClienteController } from "./useCases/createCliente";
 import { removeClienteController } from "./useCases/removeCliente";
 import { getAgendamentosController} from  "./useCases/getAgendamentos"
 import { updateClientesController } from "./useCases/updateClientes";
+import { updateBarbeiroController } from "./useCases/updateBarbeiro";
 
 const router = Router();
 
 router.put("/:id", (req: Request, res: Response) => {
   return updateClientesController.handle(req, res);
+});
+
+router.put("barbeiros/atualizar/:id", (req: Request, res:Response)=>{
+  return updateBarbeiroController.handle(req,res);
 });
 router.delete("/barbeiros/:id", (req, res) =>
   deleteBarbeiroController.handle(req, res)
