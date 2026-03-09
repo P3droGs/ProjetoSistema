@@ -15,9 +15,10 @@ router.put("/:id", (req: Request, res: Response) => {
   return updateClientesController.handle(req, res);
 });
 
-router.put("barbeiros/atualizar/:id", (req: Request, res:Response)=>{
+router.put("/barbeiros/atualizar/:id", (req: Request, res:Response)=>{
   return updateBarbeiroController.handle(req,res);
 });
+
 router.delete("/barbeiros/:id", (req, res) =>
   deleteBarbeiroController.handle(req, res)
 );

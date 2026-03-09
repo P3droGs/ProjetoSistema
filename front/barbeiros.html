@@ -47,15 +47,40 @@
     </div>
   </div>
 
+  <!-- NOVO MODAL ATUALIZAR -->
+  <div id="modal-atualizar" class="modal hidden">
+    <div class="modal-content">
+      <h3>Atualizar barbeiro</h3>
+
+      <input
+        type="text"
+        id="input-nome-atualizar"
+        placeholder="Novo nome do barbeiro"
+        style="
+          width:100%;
+          padding:10px;
+          border-radius:8px;
+          border:1px solid var(--border);
+          margin:12px 0 20px;
+        "
+      />
+
+      <div class="modal-actions">
+        <button id="btn-cancelar-atualizar">Cancelar</button>
+        <button id="btn-confirmar-atualizar">Atualizar</button>
+      </div>
+    </div>
+  </div>
+
   <div class="layout">
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <h1>Agendamento</h1>
       <a href="index.html">Dashboard</a>
-      <a href="agendamentos.html">Agendamentos Hoje</a>
+      <a href="agendamentos.html" >Agendamentos Hoje</a>
       <a href="clientes.html">Clientes</a>
-      <a href="barbeiros.html" class="active">Barbeiros</a>
+      <a href="barbeiros.html" >Barbeiros</a>
     </aside>
 
     <!-- CONTENT -->
@@ -77,5 +102,6 @@
 
   <!-- SCRIPT -->
   <script type="module" src="./dist/app.js"></script>
+
 </body>
 </html>
