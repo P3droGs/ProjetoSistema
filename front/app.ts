@@ -3,198 +3,376 @@
 ========================= */
 
 interface Cliente {
-  id: string;
-  nome: string;
-  telefone: string;
-  email?: string;
+ id: string
+ nome: string
+ telefone: string
+ email?: string
 }
 
-const API_CLIENTES = "http://localhost:3000/clientes";
+const API_CLIENTES = "http://localhost:3000/clientes"
 
-async function buscarClientes(): Promise<void> {
-  try {
-    const response = await fetch(API_CLIENTES);
+const tbodyClientes = document.getElementById("clientes-tbody")
 
-    if (!response.ok) {
-      throw new Error("Erro ao buscar clientes");
-    }
+async function buscarClientes(): Promise<void>{
 
-    const result = await response.json();
-    renderizarClientes(result.clientes);
-  } catch (error) {
-    console.error("Falha na conexão (clientes):", error);
-  }
+ const response = await fetch(API_CLIENTES)
+
+ const result = await response.json()
+
+ renderizarClientes(result.clientes)
+
 }
+
+
 
 function renderizarClientes(clientes: Cliente[]): void {
-  const tbody = document.querySelector("#clientes-tbody");
-  if (!tbody) return;
 
-  tbody.innerHTML = "";
+ if(!tbodyClientes) return
 
-  clientes.forEach(cliente => {
-    const tr = document.createElement("tr");
+ tbodyClientes.innerHTML = ""
 
-    tr.innerHTML = `
-      <td>${cliente.nome}</td>
-      <td>${cliente.telefone}</td>
-      <td>${cliente.email ?? "-"}</td>
-      <td>
-        <button 
-          class="btn-remover-cliente"
-          data-id="${cliente.id}"
-          style="background:#dc2626; color:#fff; padding:6px 10px; border-radius:4px;"
-        >
-          Remover
-        </button>
-      </td>
-    `;
+ clientes.forEach(cliente => {
 
-    tbody.appendChild(tr);
-  });
+ const tr = document.createElement("tr")
 
-  document
-    .querySelectorAll<HTMLButtonElement>(".btn-remover-cliente")
-    .forEach(button => {
-      button.addEventListener("click", () => {
-        const id = button.dataset.id;
-        if (!id) return;
-        abrirModalExcluirCliente(id);
-      });
-    });
+ tr.innerHTML = `
+
+<td>${cliente.nome}</td>
+
+<td>${cliente.telefone}</td>
+
+<td>${cliente.email ?? "-"}</td>
+
+<td>
+
+<button
+
+class="btn-atualizar-cliente"
+
+data-id="${cliente.id}"
+
+data-nome="${cliente.nome}"
+
+data-telefone="${cliente.telefone}"
+
+data-email="${cliente.email ?? ""}"
+
+style="background:#2563eb;color:#fff;padding:6px 10px;border-radius:4px;"
+
+>
+
+Atualizar
+
+</button>
+
+<button
+
+class="btn-remover-cliente"
+
+data-id="${cliente.id}"
+
+style="background:#dc2626;color:#fff;padding:6px 10px;border-radius:4px;"
+
+>
+
+Remover
+
+</button>
+
+</td>
+
+`
+
+ tbodyClientes.appendChild(tr)
+
+ })
+
+
+ document.querySelectorAll<HTMLButtonElement>(".btn-remover-cliente")
+
+ .forEach(btn=>{
+
+ btn.addEventListener("click",()=>{
+
+ const id = btn.dataset.id
+
+ if(!id) return
+
+ abrirModalExcluirCliente(id)
+
+ })
+
+ })
+
+
+ document.querySelectorAll<HTMLButtonElement>(".btn-atualizar-cliente")
+
+ .forEach(btn=>{
+
+ btn.addEventListener("click",()=>{
+
+ const id = btn.dataset.id
+
+ const nome = btn.dataset.nome
+
+ const telefone = btn.dataset.telefone
+
+ const email = btn.dataset.email
+
+ if(!id || !nome || !telefone) return
+
+ abrirModalAtualizarCliente(id,nome,telefone,email ?? "")
+
+ })
+
+ })
+
 }
 
-/* =========================
-   EXCLUIR CLIENTE
-========================= */
 
-let clienteIdParaExcluir: string | null = null;
 
-const modalExcluirCliente =
-  document.getElementById("modal-excluir-cliente") as HTMLDivElement | null;
 
-const btnCancelarCliente =
-  document.getElementById("btn-cancelar-cliente") as HTMLButtonElement | null;
 
-const btnConfirmarCliente =
-  document.getElementById("btn-confirmar-cliente") as HTMLButtonElement | null;
 
-function abrirModalExcluirCliente(id: string): void {
-  clienteIdParaExcluir = id;
-  modalExcluirCliente?.classList.remove("hidden");
+/* =====================
+
+ADICIONAR CLIENTE
+
+===================== */
+
+const btnAddCliente = document.getElementById("btn-add-cliente")
+
+const modalAdicionarCliente = document.getElementById("modal-adicionar-cliente")
+
+const inputNomeCliente = document.getElementById("input-nome-cliente") as HTMLInputElement
+
+const inputTelefoneCliente = document.getElementById("input-telefone-cliente") as HTMLInputElement
+
+const inputEmailCliente = document.getElementById("input-email-cliente") as HTMLInputElement
+
+const btnCancelarAddCliente = document.getElementById("btn-cancelar-add-cliente")
+
+const btnConfirmarAddCliente = document.getElementById("btn-confirmar-add-cliente")
+
+
+function abrirModalAdicionarCliente(){
+
+ modalAdicionarCliente?.classList.remove("hidden")
+
 }
 
-function fecharModalExcluirCliente(): void {
-  clienteIdParaExcluir = null;
-  modalExcluirCliente?.classList.add("hidden");
+function fecharModalAdicionarCliente(){
+
+ modalAdicionarCliente?.classList.add("hidden")
+
 }
 
-btnCancelarCliente?.addEventListener("click", fecharModalExcluirCliente);
 
-async function removerCliente(id: string): Promise<void> {
-  try {
-    const response = await fetch(`${API_CLIENTES}/${id}`, {
-      method: "DELETE",
-    });
 
-    if (!response.ok) {
-      throw new Error("Erro ao excluir cliente");
-    }
+async function adicionarCliente(nome:string,telefone:string,email:string){
 
-    buscarClientes();
-  } catch (error) {
-    console.error("Erro ao excluir cliente:", error);
-  }
+ await fetch(API_CLIENTES,{
+
+ method:"POST",
+
+ headers:{
+
+ "Content-Type":"application/json"
+
+ },
+
+ body:JSON.stringify({nome,telefone,email})
+
+ })
+
+ buscarClientes()
+
 }
 
-btnConfirmarCliente?.addEventListener("click", () => {
-  if (!clienteIdParaExcluir) return;
 
-  removerCliente(clienteIdParaExcluir);
-  fecharModalExcluirCliente();
-});
+btnAddCliente?.addEventListener("click",abrirModalAdicionarCliente)
 
-/* =========================
-   ADICIONAR CLIENTE
-========================= */
+btnCancelarAddCliente?.addEventListener("click",fecharModalAdicionarCliente)
 
-const btnAddCliente = document.getElementById(
-  "btn-add-cliente"
-) as HTMLButtonElement | null;
+btnConfirmarAddCliente?.addEventListener("click",()=>{
 
-const modalAdicionarCliente = document.getElementById(
-  "modal-adicionar-cliente"
-) as HTMLDivElement | null;
+ const nome = inputNomeCliente.value
 
-const inputNomeCliente = document.getElementById(
-  "input-nome-cliente"
-) as HTMLInputElement | null;
+ const telefone = inputTelefoneCliente.value
 
-const inputTelefoneCliente = document.getElementById(
-  "input-telefone-cliente"
-) as HTMLInputElement | null;
+ const email = inputEmailCliente.value
 
-const inputEmailCliente = document.getElementById(
-  "input-email-cliente"
-) as HTMLInputElement | null;
+ if(!nome || !telefone) return
 
-const btnCancelarAddCliente = document.getElementById(
-  "btn-cancelar-add-cliente"
-) as HTMLButtonElement | null;
+ adicionarCliente(nome,telefone,email)
 
-const btnConfirmarAddCliente = document.getElementById(
-  "btn-confirmar-add-cliente"
-) as HTMLButtonElement | null;
+ fecharModalAdicionarCliente()
 
-function abrirModalAdicionarCliente(): void {
-  modalAdicionarCliente?.classList.remove("hidden");
+})
+
+
+
+/* =====================
+
+ATUALIZAR CLIENTE
+
+===================== */
+
+let clienteIdAtualizar:string | null = null
+
+const modalAtualizarCliente = document.getElementById("modal-atualizar-cliente")
+
+const inputNomeAtualizarCliente = document.getElementById("input-nome-atualizar-cliente") as HTMLInputElement
+
+const inputTelefoneAtualizarCliente = document.getElementById("input-telefone-atualizar-cliente") as HTMLInputElement
+
+const inputEmailAtualizarCliente = document.getElementById("input-email-atualizar-cliente") as HTMLInputElement
+
+const btnCancelarAtualizarCliente = document.getElementById("btn-cancelar-atualizar-cliente")
+
+const btnConfirmarAtualizarCliente = document.getElementById("btn-confirmar-atualizar-cliente")
+
+
+function abrirModalAtualizarCliente(id:string,nome:string,telefone:string,email:string){
+
+ clienteIdAtualizar = id
+
+ inputNomeAtualizarCliente.value = nome
+
+ inputTelefoneAtualizarCliente.value = telefone
+
+ inputEmailAtualizarCliente.value = email
+
+ modalAtualizarCliente?.classList.remove("hidden")
+
 }
 
-function fecharModalAdicionarCliente(): void {
-  modalAdicionarCliente?.classList.add("hidden");
+function fecharModalAtualizarCliente(){
+
+ clienteIdAtualizar = null
+
+ modalAtualizarCliente?.classList.add("hidden")
+
 }
 
-async function adicionarCliente(
-  nome: string,
-  telefone: string,
-  email: string
-): Promise<void> {
-  try {
-    const response = await fetch(API_CLIENTES, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nome, telefone, email }),
-    });
 
-    if (!response.ok) {
-      throw new Error("Erro ao cadastrar cliente");
-    }
 
-    buscarClientes();
-  } catch (error) {
-    console.error("Erro ao cadastrar cliente:", error);
-  }
+async function atualizarCliente(id:string,nome:string,telefone:string,email:string){
+
+ await fetch(`${API_CLIENTES}/${id}`,{
+
+ method:"PUT",
+
+ headers:{
+
+ "Content-Type":"application/json"
+
+ },
+
+ body:JSON.stringify({nome,telefone,email})
+
+ })
+
+ buscarClientes()
+
 }
 
-btnAddCliente?.addEventListener("click", abrirModalAdicionarCliente);
 
-btnCancelarAddCliente?.addEventListener("click", fecharModalAdicionarCliente);
 
-btnConfirmarAddCliente?.addEventListener("click", () => {
-  const nome = inputNomeCliente?.value.trim() ?? "";
-  const telefone = inputTelefoneCliente?.value.trim() ?? "";
-  const email = inputEmailCliente?.value.trim() ?? "";
+btnCancelarAtualizarCliente?.addEventListener("click",fecharModalAtualizarCliente)
 
-  if (!nome || !telefone || !email) {
-    alert("Preencha todos os campos");
-    return;
-  }
+btnConfirmarAtualizarCliente?.addEventListener("click",()=>{
 
-  adicionarCliente(nome, telefone, email);
-  fecharModalAdicionarCliente();
-});
+ const nome = inputNomeAtualizarCliente.value
+
+ const telefone = inputTelefoneAtualizarCliente.value
+
+ const email = inputEmailAtualizarCliente.value
+
+ if(!clienteIdAtualizar) return
+
+ atualizarCliente(clienteIdAtualizar,nome,telefone,email)
+
+ fecharModalAtualizarCliente()
+
+})
+
+
+
+
+/* =====================
+
+EXCLUIR CLIENTE
+
+===================== */
+
+let clienteIdExcluir:string | null = null
+
+const modalExcluirCliente = document.getElementById("modal-excluir-cliente")
+
+const btnCancelarCliente = document.getElementById("btn-cancelar-cliente")
+
+const btnConfirmarCliente = document.getElementById("btn-confirmar-cliente")
+
+
+function abrirModalExcluirCliente(id:string){
+
+ clienteIdExcluir = id
+
+ modalExcluirCliente?.classList.remove("hidden")
+
+}
+
+function fecharModalExcluirCliente(){
+
+ clienteIdExcluir = null
+
+ modalExcluirCliente?.classList.add("hidden")
+
+}
+
+
+
+async function removerCliente(id:string){
+
+ await fetch(`${API_CLIENTES}/${id}`,{
+
+ method:"DELETE"
+
+ })
+
+ buscarClientes()
+
+}
+
+
+
+btnCancelarCliente?.addEventListener("click",fecharModalExcluirCliente)
+
+btnConfirmarCliente?.addEventListener("click",()=>{
+
+ if(!clienteIdExcluir) return
+
+ removerCliente(clienteIdExcluir)
+
+ fecharModalExcluirCliente()
+
+})
+
+
+
+
+/* =====================
+
+INICIALIZAÇÃO
+
+===================== */
+
+if(window.location.pathname.includes("clientes.html")){
+
+ buscarClientes()
+
+}
 
 /* =========================
    BARBEIROS

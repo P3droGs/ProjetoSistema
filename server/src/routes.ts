@@ -11,9 +11,8 @@ import { updateBarbeiroController } from "./useCases/updateBarbeiro";
 
 const router = Router();
 
-router.put("/:id", (req: Request, res: Response) => {
-  return updateClientesController.handle(req, res);
-});
+//BARBEIROS//-------------------------
+
 
 router.put("/barbeiros/atualizar/:id", (req: Request, res:Response)=>{
   return updateBarbeiroController.handle(req,res);
@@ -25,12 +24,17 @@ router.delete("/barbeiros/:id", (req, res) =>
 router.get("/barbeiros", (req: Request, res: Response) => {
   return getBarbeirosController.handle(req, res);
 });
-router.get("/clientes", (req: Request, res: Response) => {
-  return getClientesController.handle(req, res);
-});
 router.post("/barbeiros", (req, res) =>
   createBarbeiroController.handle(req, res)
 );
+
+//CLIENTES//-----------------------
+router.get("/clientes", (req: Request, res: Response) => {
+  return getClientesController.handle(req, res);
+});
+router.put("/clientes/:id", (req: Request, res: Response) => {
+  return updateClientesController.handle(req, res);
+});
 router.post("/clientes", (req, res) => {
   return createClienteController.handle(req, res);
 });
